@@ -1,5 +1,0 @@
-2026/05/19-17:51:13.106 164fb72 Creating DB /Users/arwaalkadi/Desktop/Challenge 7/suhail-whatsapp/session/session/Default/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb since it was missing.
-2026/05/19-17:51:13.109 164fb72 Reusing MANIFEST /Users/arwaalkadi/Desktop/Challenge 7/suhail-whatsapp/session/session/Default/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
-2026/05/19-17:52:01.236 164fb72 Level-0 table #5: started
-2026/05/19-17:52:01.246 164fb72 Level-0 table #5: 1057168 bytes OK
-2026/05/19-17:52:01.248 164fb72 Delete type=0 #3

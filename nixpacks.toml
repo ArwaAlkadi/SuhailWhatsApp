@@ -1,5 +1,17 @@
 [phases.setup]
-nixPkgs = ["chromium"]
-
-[variables]
-PUPPETEER_EXECUTABLE_PATH = "/nix/store/chromium/bin/chromium"
+nixPkgs = [
+  "chromium",
+  "glib",
+  "nss",
+  "nspr",
+  "atk",
+  "at-spi2-atk",
+  "cups",
+  "dbus",
+  "expat",
+  "libdrm",
+  "libxkbcommon",
+  "pango",
+  "cairo",
+  "alsa-lib"
+]

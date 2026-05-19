@@ -1,9 +1,12 @@
 const { Client, LocalAuth } = require('whatsapp-web.js');
-const qrcode = require('qrcode-terminal');
+const qrcodeTerminal = require('qrcode-terminal');
+const QRCode = require('qrcode');
 const express = require('express');
 
 const app = express();
 app.use(express.json());
+
+let latestQR = null;
 
 const client = new Client({
     authStrategy: new LocalAuth({
@@ -19,17 +22,37 @@ const client = new Client({
     }
 });
 
-client.on('qr', (qr) => {
-    qrcode.generate(qr, { small: true });
+client.on('qr', async (qr) => {
+    console.log('QR RECEIVED');
+
+    qrcodeTerminal.generate(qr, { small: true });
+
+    latestQR = await QRCode.toDataURL(qr);
+    console.log('Open /qr to scan the QR code');
 });
 
 client.on('ready', () => {
+    latestQR = null;
     console.log('WhatsApp ready!');
 });
 
-// endpoint يستقبل الطلب من Firebase
+app.get('/qr', (req, res) => {
+    if (!latestQR) {
+        return res.send('No QR available. WhatsApp may already be ready.');
+    }
+
+    res.send(`
+        <html>
+            <body style="display:flex;justify-content:center;align-items:center;height:100vh;">
+                <img src="${latestQR}" />
+            </body>
+        </html>
+    `);
+});
+
 app.post('/send', async (req, res) => {
     const { phone, message } = req.body;
+
     try {
         const chatId = `${phone}@c.us`;
         await client.sendMessage(chatId, message);

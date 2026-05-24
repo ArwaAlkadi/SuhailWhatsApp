@@ -8,6 +8,20 @@ app.use(express.json());
 
 let latestQR = null;
 
+// MARK: - API Key Middleware
+// Protects the /send endpoint from unauthorized access.
+// Set API_KEY in Railway environment variables.
+const API_KEY = process.env.API_KEY;
+
+const requireApiKey = (req, res, next) => {
+    const key = req.headers["x-api-key"];
+    if (!key || key !== API_KEY) {
+        console.warn(`Unauthorized request from ${req.ip}`);
+        return res.status(401).json({ success: false, error: "Unauthorized" });
+    }
+    next();
+};
+
 const client = new Client({
     authStrategy: new LocalAuth({
         dataPath: './session'
@@ -50,7 +64,8 @@ app.get('/qr', (req, res) => {
     `);
 });
 
-app.post('/send', async (req, res) => {
+// Protected — requires valid x-api-key header
+app.post('/send', requireApiKey, async (req, res) => {
     const { phone, message } = req.body;
 
     try {

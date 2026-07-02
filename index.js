@@ -2,9 +2,35 @@ const { Client, LocalAuth } = require('whatsapp-web.js');
 const qrcodeTerminal = require('qrcode-terminal');
 const QRCode = require('qrcode');
 const express = require('express');
+const admin = require("firebase-admin");
 
 const app = express();
 app.use(express.json());
+
+admin.initializeApp({
+    credential: admin.credential.cert(
+        JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT)
+    )
+});
+
+const db = admin.firestore();
+
+setMaintenance(true);
+
+async function setMaintenance(enabled) {
+    try {
+        await db.collection("appConfig")
+            .doc("maintenance")
+            .set(
+                { isEnabled: enabled },
+                { merge: true }
+            );
+
+        console.log(`Maintenance mode: ${enabled}`);
+    } catch (err) {
+        console.error("Failed to update maintenance:", err);
+    }
+}
 
 let latestQR = null;
 let isReady = false;
@@ -47,25 +73,36 @@ function createClient() {
         console.log('Open /qr to scan the QR code');
     });
 
-    c.on('ready', () => {
+    c.on('ready', async () => {
         latestQR = null;
         isReady = true;
         lastSuccessfulSend = Date.now();
+
+        await setMaintenance(false);
+
         console.log('WhatsApp ready!');
     });
 
-    c.on('disconnected', (reason) => {
+    c.on('disconnected', async (reason) => {
         console.warn(`WhatsApp disconnected: ${reason} — restarting client...`);
+
         isReady = false;
-        restartClient();
+
+        await setMaintenance(true);
+
+        await restartClient();
     });
 
-    c.on('auth_failure', (msg) => {
+    c.on('auth_failure', async (msg) => {
         console.error(`Auth failure: ${msg} — restarting client...`);
-        isReady = false;
-        restartClient();
-    });
 
+        isReady = false;
+
+        await setMaintenance(true);
+
+        await restartClient();
+    });
+    
     return c;
 }
 

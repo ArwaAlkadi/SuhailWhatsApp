@@ -19,14 +19,26 @@ setMaintenance(true);
 
 async function setMaintenance(enabled) {
     try {
-        await db.collection("remoteConfig")
-            .doc("maintenance")
-        .set(
-            { isEnabled_whatsapp: enabled },
-            { merge: true }
-        );
+        const docRef = db.collection("remoteConfig").doc("maintenance");
 
-        console.log(`Maintenance mode: ${enabled}`);
+        if (enabled) {
+            await docRef.set(
+                {
+                    isEnabled: true,
+                    isEnabled_whatsapp: true
+                },
+                { merge: true }
+            );
+        } else {
+            await docRef.set(
+                {
+                    isEnabled_whatsapp: false
+                },
+                { merge: true }
+            );
+        }
+
+        console.log(`WhatsApp maintenance mode: ${enabled}`);
     } catch (err) {
         console.error("Failed to update maintenance:", err);
     }

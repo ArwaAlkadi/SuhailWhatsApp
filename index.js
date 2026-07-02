@@ -22,20 +22,15 @@ async function setMaintenance(enabled) {
         const docRef = db.collection("remoteConfig").doc("maintenance");
 
         if (enabled) {
-            await docRef.set(
-                {
-                    isEnabled: true,
-                    isEnabled_whatsapp: true
-                },
-                { merge: true }
-            );
+            await docRef.set({
+                isEnabled: true,
+                isEnabled_whatsapp: true
+            }, { merge: true });
         } else {
-            await docRef.set(
-                {
-                    isEnabled_whatsapp: false
-                },
-                { merge: true }
-            );
+            await docRef.set({
+                isEnabled: false,
+                isEnabled_whatsapp: false
+            }, { merge: true });
         }
 
         console.log(`WhatsApp maintenance mode: ${enabled}`);

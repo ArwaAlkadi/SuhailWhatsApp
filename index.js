@@ -19,7 +19,7 @@ setMaintenance(true);
 
 async function setMaintenance(enabled) {
     try {
-        await db.collection("appConfig")
+        await db.collection("remoteConfig")
             .doc("maintenance")
             .set(
                 { isEnabled: enabled },

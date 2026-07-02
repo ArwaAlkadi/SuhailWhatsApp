@@ -21,10 +21,10 @@ async function setMaintenance(enabled) {
     try {
         await db.collection("remoteConfig")
             .doc("maintenance")
-            .set(
-                { isEnabled: enabled },
-                { merge: true }
-            );
+        .set(
+            { isEnabled_whatsapp: enabled },
+            { merge: true }
+        );
 
         console.log(`Maintenance mode: ${enabled}`);
     } catch (err) {

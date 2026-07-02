@@ -138,11 +138,10 @@ const MAX_FAILURES = 3;
 
 setInterval(() => {
     if (!isReady) {
-        console.log('[health] Client not ready — waiting for QR or reconnect...');
-        return;
+        console.warn('[health] Client not ready');
+    } else {
+        consecutiveFailures = 0;
     }
-    console.log('[health] Client is ready ✅');
-    consecutiveFailures = 0;
 }, 5 * 60 * 1000);
 
 // MARK: - Routes

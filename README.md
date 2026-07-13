@@ -3,6 +3,7 @@
 **The messaging arm of the Suhail safety system.**
 
 A small Node.js microservice that delivers the emergency WhatsApp alerts for the [Suhail iOS app](https://github.com/ArwaAlkadi/Suhail). When a traveler is overdue, the Suhail backend calls this service, which sends the emergency contacts a WhatsApp message containing the last known location and a tracking link — straight to an app everyone already has.
+
 <br>
 
 ## How It Works
